@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res, UploadedFile, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put,  Res, UploadedFile, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { adminDTO } from './admin.dto';
  
 import { AdminService } from './admin.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
-import { Admin } from 'typeorm';
+
 
 
 @Controller('admin')
@@ -16,13 +16,13 @@ export class AdminController {
  //GET ADDMIN by ID
   @Get('index/:id')
   getAdminbyId( @Param('id')id:number): object {
-    return this.adminService.getAdminbyId(id);
+    return this.adminService.getAdminById(id);
   }
 
 //ADD ADMIN  
 @Post('addadmin')
 @UsePipes(new ValidationPipe())
-addAdmin(@Body() data:Admin): object {
+addAdmin(@Body() data:adminDTO): object {
 
 return this.adminService.addAdmin(data);
 }
@@ -30,19 +30,19 @@ return this.adminService.addAdmin(data);
 //UPDATE ADMIN
 @Put('/updateadmin')
 @UsePipes(new ValidationPipe())
-updateAdmin(@Param('id')id:number, @Body() data:Admin): object{
-    return this.adminService.updateAdmin(id,data);
+updateAdmin( @Body() data:adminDTO): object{
+    return this.adminService.updateAdmin(data);
 }
 
 @Put('/updateadmin/:id')
 @UsePipes(new ValidationPipe())
-updateAdminbyID(@Param('') id:number,@Body() data:Admin): object{
-    return this.adminService.updateAdmin(id,data);
+updateAdminbyID(@Param('') id:number,@Body() data:adminDTO): object{
+    return this.adminService.updateadminby(id,data);
 }
 
 //delete admin
 @Delete(':id')
-deleteAdmin(@Param('id')id: number, @Body()data:Admin): object {
+deleteAdmin(@Param('id')id: number): object {
   
   return this.adminService.deleteAdmin(id);
 }
@@ -54,8 +54,8 @@ deleteAdmin(@Param('id')id: number, @Body()data:Admin): object {
   }
   */
 @Get('alladmin')
-getAllAdmins(@Query() data: adminDTO): object {
-  return this.adminService.getAllAdmin(data);
+getAllAdmins(): object {
+  return this.adminService.getAllAdmin();
 }
 
 
@@ -90,8 +90,5 @@ getAllAdmins(@Query() data: adminDTO): object {
    }
    
 
- @Post('register')
- register(@Body() data:adminDTO):any{
-  return this.adminService.register(data);
- }
+ 
 }
