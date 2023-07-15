@@ -1,19 +1,22 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from "@nestjs/common";
-import { AdminEntity, UserEntity, } from "./admin.entity";
+import { AdminEntity, AdminProfile, UserEntity, } from "./admin.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { adminDTO } from "./admin.dto";
-
+import { AdminLoginDTO, adminDTO, adminProfileDTO } from "./admin.dto";
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
 export class AdminService{
+  
   constructor(
     @InjectRepository(AdminEntity)
     private adminrepo:Repository<AdminEntity>,
     @InjectRepository(UserEntity)
-    private userrepo:Repository<UserEntity>)
+    private userrepo:Repository<UserEntity>,
+    @InjectRepository(AdminProfile)
+    private profilerepo:Repository<AdminProfile>)
     {}
     
   
@@ -30,7 +33,7 @@ export class AdminService{
     return this.adminrepo.findOneBy({ id });
 }  
 
-  async addAdmin(data: adminDTO): Promise<AdminEntity> {
+  async addAdmin(email:string,data: adminDTO): Promise<AdminEntity> {
     return this.adminrepo.save(data);
   }
    
@@ -55,10 +58,24 @@ export class AdminService{
       
       
       }
+
+  //adminProfile
   
-  async adduser(data):Promise<UserEntity> {
-    return this.userrepo.save(data);
+ async addProfile(data: adminProfileDTO): Promise<AdminProfile> {
+    return this.profilerepo.save(data);
+  }    
+  
+    
+      async signup(data: adminDTO): Promise<AdminEntity> {
+        const salt = await bcrypt.genSalt();
+        data.password = await bcrypt.hash(data.password,salt);
+       return this.adminrepo.save(data);
+    }
+      async signIn(data:  AdminLoginDTO  ) {
+       const userdata= await this.adminrepo.findOneBy({email:data.email});
+      const match:boolean = await bcrypt.compare(data.password, userdata.password);
+      return match;
+     }    
 
-  }   
-
+     
     }

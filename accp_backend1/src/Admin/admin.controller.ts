@@ -1,11 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, Param, Post, Put,  Res, UploadedFile, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put,  Res, Session, UploadedFile, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 
-import { adminDTO } from './admin.dto';
+import { adminDTO, adminProfileDTO } from './admin.dto';
  
 import { AdminService } from './admin.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
+import { SessionGuard } from './session.guard';
+
 
 
 
@@ -13,8 +15,11 @@ import { MulterError, diskStorage } from 'multer';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
  
- //GET ADDMIN by ID
+ //GET ADDMIN by 
+ 
   @Get('index/:id')
+  @UsePipes(new ValidationPipe())
+  @UseGuards(SessionGuard)
   getAdminbyId( @Param('id')id:number): object {
     return this.adminService.getAdminById(id);
   }
@@ -22,9 +27,10 @@ export class AdminController {
 //ADD ADMIN  
 @Post('addadmin')
 @UsePipes(new ValidationPipe())
-addAdmin(@Body() data:adminDTO): object {
+@UseGuards(SessionGuard)
+addAdmin(@Body() data:adminDTO,@Session() session): object {
 
-return this.adminService.addAdmin(data);
+return this.adminService.addAdmin(session.email,data);
 }
 
 //UPDATE ADMIN
@@ -89,6 +95,41 @@ getAllAdmins(): object {
 
    }
    
+//login
+
+@UsePipes(new ValidationPipe)
+    signup(@Body() mydata: adminDTO, @UploadedFile() imageobj: Express.Multer.File) {
+        console.log(mydata);
+        console.log(imageobj.filename);
+        mydata.filenames = imageobj.filename;
+        return this.adminService.signup(mydata);
+
+    }
+
+    @Post('/signin')
+    signIn(@Body() data: adminDTO, @Session() session) {
+
+        if (this.adminService.signIn(data)) {
+            session.email = data.email;
+            return true;
+        }
+        else {
+
+            return false;
+        }
+        // return this.adminService.signIn(data);
+    }
+
+
+   
+//AdminProfile
+@UseGuards(SessionGuard) 
+@Post('addprofile')
+
+addProfile(@Body() data:adminProfileDTO): object {
+
+return this.adminService.addProfile(data);
+}
 
  
 }
