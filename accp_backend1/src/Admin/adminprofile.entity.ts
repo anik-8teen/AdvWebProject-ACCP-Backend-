@@ -34,7 +34,8 @@ export class AdminProfile {
   About: string;
 
   @OneToOne(() =>AdminEntity,{
-    cascade: true,
+    cascade:true,
+    
 })
 @JoinColumn()
 admin:AdminEntity;

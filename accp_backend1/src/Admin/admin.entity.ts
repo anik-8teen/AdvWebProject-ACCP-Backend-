@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { UserEntity } from "src/User/user.entity";
-import { Column, Entity,  OneToMany,     PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity,    OneToMany,          PrimaryGeneratedColumn } from "typeorm";
 import { AdminProfile } from "./adminprofile.entity";
+
 
 @Entity("admin")
 export class AdminEntity{
@@ -13,11 +14,12 @@ export class AdminEntity{
     email: string;
     @Column()
     password: string;
+    @Column()
+    filenames: string;
     
     @OneToMany(()=>UserEntity,user=>user.admin)
     users: UserEntity[];
-    
-    
+   
 }
 export { UserEntity };
 export{AdminProfile};

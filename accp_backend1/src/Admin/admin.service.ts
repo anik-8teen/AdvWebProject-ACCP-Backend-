@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AdminService{
+ 
   
   constructor(
     @InjectRepository(AdminEntity)
@@ -34,11 +35,13 @@ export class AdminService{
 }  
 
   async addAdmin(email:string,data: adminDTO): Promise<AdminEntity> {
+    const salt = await bcrypt.genSalt();
+        data.password = await bcrypt.hash(data.password,salt);
     return this.adminrepo.save(data);
   }
    
     
-  async updateAdmin(data: adminDTO): Promise<AdminEntity> {
+  async updateAdmin(email:string,data: adminDTO): Promise<AdminEntity> {
     await this.adminrepo.update(data.id, data);
     return this.adminrepo.findOneBy({ id: data.id });
 }
@@ -65,6 +68,13 @@ export class AdminService{
     return this.profilerepo.save(data);
   }    
   
+  async updateprofile(email: string, data: adminProfileDTO): Promise<AdminProfile> {
+    
+    await this.profilerepo.update(data.id, data);
+    return this.profilerepo.findOneBy({ Pid: data.id });
+   
+    
+  }
     
       async signup(data: adminDTO): Promise<AdminEntity> {
         const salt = await bcrypt.genSalt();
@@ -73,7 +83,8 @@ export class AdminService{
     }
       async signIn(data:  AdminLoginDTO  ) {
        const userdata= await this.adminrepo.findOneBy({email:data.email});
-      const match:boolean = await bcrypt.compare(data.password, userdata.password);
+      //const match:boolean = await bcrypt.compare(data.password, userdata.password);
+      const match: boolean = userdata && await bcrypt.compare(data.password, userdata.password);
       return match;
      }    
 

@@ -35,9 +35,11 @@ return this.adminService.addAdmin(session.email,data);
 
 //UPDATE ADMIN
 @Put('/updateadmin')
+@UseGuards(SessionGuard)
 @UsePipes(new ValidationPipe())
-updateAdmin( @Body() data:adminDTO): object{
-    return this.adminService.updateAdmin(data);
+updateAdmin(@Body() data: adminDTO, @Session() session): object {
+  console.log(session.email);
+  return this.adminService.updateAdmin(session.email, data);
 }
 
 @Put('/updateadmin/:id')
@@ -47,7 +49,7 @@ updateAdminbyID(@Param('') id:number,@Body() data:adminDTO): object{
 }
 
 //delete admin
-@Delete(':id')
+@Delete('delete/:id')
 deleteAdmin(@Param('id')id: number): object {
   
   return this.adminService.deleteAdmin(id);
@@ -98,6 +100,7 @@ getAllAdmins(): object {
 //login
 
 @UsePipes(new ValidationPipe)
+    @Post('signup')
     signup(@Body() mydata: adminDTO, @UploadedFile() imageobj: Express.Multer.File) {
         console.log(mydata);
         console.log(imageobj.filename);
@@ -117,7 +120,7 @@ getAllAdmins(): object {
 
             return false;
         }
-        // return this.adminService.signIn(data);
+        //return this.adminService.signIn(data);
     }
 
 
@@ -131,5 +134,12 @@ addProfile(@Body() data:adminProfileDTO): object {
 return this.adminService.addProfile(data);
 }
 
+@Put('/updateprofile')
+@UseGuards(SessionGuard)
+@UsePipes(new ValidationPipe())
+updateAdminProfile(@Body() data: adminProfileDTO, @Session() session): object {
+  console.log(session.email);
+  return this.adminService.updateprofile(session.email, data);
+}
  
 }

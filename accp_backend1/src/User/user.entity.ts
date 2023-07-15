@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { AdminEntity } from 'src/Admin/admin.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne,  PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
 export class UserEntity {
@@ -15,3 +15,5 @@ export class UserEntity {
   @ManyToOne(()=>AdminEntity,admin=>admin.users)
     admin: AdminEntity;
 }
+
+

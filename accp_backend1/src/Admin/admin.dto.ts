@@ -14,8 +14,7 @@ export class adminDTO{
   email:string;
   @IsNotEmpty()
   password:string;
-  @IsNotEmpty()
-  phone:string;
+  @IsString()
   filenames: string;
  
 }
