@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller,  Post, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { userDTO, userProfileDTO } from './user.dto';
 import { SessionGuard } from 'src/Admin/session.guard';
@@ -21,4 +21,6 @@ addProfile(@Body() data:userProfileDTO): object {
 return this.userService.addProfile(data);
 }
 
+
 }
+

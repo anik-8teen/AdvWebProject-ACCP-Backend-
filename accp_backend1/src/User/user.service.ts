@@ -8,6 +8,7 @@ import { userProfile } from './userprofile.entity';
 
 @Injectable()
 export class UserService {
+  
  
   constructor(
     @InjectRepository(UserEntity)
@@ -15,6 +16,9 @@ export class UserService {
     @InjectRepository(userProfile)
     private userprofilerepo: Repository<userProfile>
   ) {}
+
+ 
+
 
   async adduser(data): Promise<UserEntity> {
     return this.userrepo.save(data);

@@ -42,6 +42,8 @@ export class AdminService{
    
     
   async updateAdmin(email:string,data: adminDTO): Promise<AdminEntity> {
+    const salt = await bcrypt.genSalt();
+        data.password = await bcrypt.hash(data.password,salt);
     await this.adminrepo.update(data.id, data);
     return this.adminrepo.findOneBy({ id: data.id });
 }
@@ -88,5 +90,10 @@ export class AdminService{
       return match;
      }    
 
-     
+    
+     async getAlluser(): Promise<UserEntity[]> {
+      //onsole.log(data.name[]);
+      return this.userrepo.find();
+    } 
+
     }
