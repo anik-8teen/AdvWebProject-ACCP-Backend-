@@ -11,6 +11,7 @@ import { SessionGuard } from './session.guard';
 
 
 
+
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
@@ -106,6 +107,8 @@ getAllAdmins(): object {
   return admin;
 }
 
+
+
 //upload file
 //feature=6
   @Post(('/upload'))
@@ -153,19 +156,11 @@ getAllAdmins(): object {
 
 //feature=9
     @Post('/signin')
-   /* signIn(@Body() data: adminDTO, @Session() session) {
+   
 
-        if (this.adminService.signIn(data)) {
-            session.email = data.email;
-            return true;
-        }
-        else {
+    
 
-            return false;
-        }
-        //return this.adminService.signIn(data);
-    }
-    */
+    
     signIn(@Body() data: adminDTO, @Session() session: Record<string, any>) {
       const isSignInSuccessful = this.adminService.signIn(data);
       if (isSignInSuccessful) {
@@ -198,7 +193,7 @@ addProfile(@Body() data:adminProfileDTO): object {
 
 return this.adminService.addProfile(data);
 }
-
+//feature=11
 @Put('/updateprofile')
 @UseGuards(SessionGuard)
 @UsePipes(new ValidationPipe())
@@ -207,7 +202,7 @@ updateAdminProfile(@Body() data: adminProfileDTO, @Session() session): object {
   return this.adminService.updateprofile(session.email, data);
 }
  
-//feature=11
+//feature=12
 @Get("alluser")
 @UseGuards(SessionGuard)
 getAllusers(): object {
@@ -222,6 +217,23 @@ getAllusers(): object {
   } 
   return admin;
 }
+//features=13
+@Get('allevents')
+  getAllEvents(): object {
+  return this.adminService.getAllEvents();
+  }
 
+  @Get(':adminId/profile')
+  async getAdminProfile(@Param('adminId') adminId: number) {
+    const adminProfile = await this.adminService.getAdminProfile(adminId);
+    return adminProfile;
+  }
+
+  @Get('profile/:adminId')
+  async GetAdminProfile(@Param('id') id: number) {
+    const adminProfile = await this.adminService.ShowAdminProfile(id);
+    return adminProfile;
+  }
 
 }
+ 

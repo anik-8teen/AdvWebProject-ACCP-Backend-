@@ -12,6 +12,7 @@ export class userDTO{
   email:string;
   @IsNotEmpty()
   password:string;
+  admin:string;
 
 }
 /*

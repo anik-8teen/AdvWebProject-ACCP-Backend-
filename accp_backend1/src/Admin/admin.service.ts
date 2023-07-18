@@ -1,14 +1,19 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from "@nestjs/common";
-import { AdminEntity, AdminProfile, UserEntity, } from "./admin.entity";
+import { AdminEntity, } from "./admin.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { AdminLoginDTO, adminDTO, adminProfileDTO } from "./admin.dto";
 import * as bcrypt from 'bcrypt';
+import { EventEntity } from "src/Organizer/event.entity ";
+import { UserEntity } from "src/User/user.entity";
+import { AdminProfile } from "./adminprofile.entity";
 
 
 @Injectable()
 export class AdminService{
+  
+  
  
   
   constructor(
@@ -17,7 +22,10 @@ export class AdminService{
     @InjectRepository(UserEntity)
     private userrepo:Repository<UserEntity>,
     @InjectRepository(AdminProfile)
-    private profilerepo:Repository<AdminProfile>)
+    private profilerepo:Repository<AdminProfile>,
+    @InjectRepository(EventEntity)
+    private eventrepo:Repository<EventEntity>
+    )
     {}
     
   
@@ -66,6 +74,23 @@ export class AdminService{
 
   //adminProfile
   
+  async getAdminProfile(id: number): Promise<AdminProfile> {
+    const admin = await this.adminrepo.findOne(id ,{ 
+      relations: ['adminProfile']
+    
+    });
+    if (admin && admin.adminProfile) {
+      return admin.adminProfile;
+    }
+    return null;
+  }
+  
+
+
+  async ShowAdminProfile(adminId: number): Promise<AdminProfile> {
+    return this.profilerepo.findOne({ where: { Pid: adminId } });
+  }
+
  async addProfile(data: adminProfileDTO): Promise<AdminProfile> {
     return this.profilerepo.save(data);
   }    
@@ -90,10 +115,19 @@ export class AdminService{
       return match;
      }    
 
-    
+  
+
+
+
      async getAlluser(): Promise<UserEntity[]> {
       //onsole.log(data.name[]);
       return this.userrepo.find();
     } 
-
+    
+    getAllEvents(): Promise<EventEntity[]> {
+      return this.eventrepo.find();
+  
+    }
+    
+     
     }

@@ -5,10 +5,11 @@ import { Module } from '@nestjs/common';
 import { adminModule } from './Admin/admin.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { userModule } from './User/user.module';
+import { organizerModule } from './Organizer/organizer.module';
 
 
 @Module({
-  imports: [adminModule,userModule,TypeOrmModule.forRoot(
+  imports: [adminModule,userModule,organizerModule,TypeOrmModule.forRoot(
    {
     type:"postgres",
     host:"localhost",
